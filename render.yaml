@@ -1,0 +1,19 @@
+      // filepath: c:\Users\Alejandro\Desktop\MilleMiglia_Fichador\bot_fichador\render.yaml
+      services:
+        - type: worker
+          name: bot-fichador-millemiglia
+          env: python
+          plan: free
+          buildCommand: "pip install -r requirements.txt"
+          startCommand: "python telegram_bot.py"
+          envVars:
+            - key: DATABASE_URL
+              fromDatabase:
+                name: millemiglia-db
+                property: connectionString
+            - key: PYTHON_VERSION
+              value: 3.11.4
+
+      databases:
+        - name: millemiglia-db
+          plan: free
