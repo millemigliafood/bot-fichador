@@ -2,6 +2,7 @@ services:
   - type: worker
     name: bot-fichador-millemiglia
     env: docker
+    dockerfilePath: ./Dockerfile
     plan: free
     autoDeploy: yes
     envVars:
