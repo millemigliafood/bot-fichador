@@ -1,4 +1,3 @@
-      // filepath: c:\Users\Alejandro\Desktop\MilleMiglia_Fichador\bot_fichador\render.yaml
       services:
         - type: worker
           name: bot-fichador-millemiglia
