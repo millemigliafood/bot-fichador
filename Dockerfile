@@ -2,7 +2,6 @@ FROM python:3.11
 
 RUN apt-get update && apt-get install -y \
     wkhtmltopdf \
-    wkhtmltoimage \
     fontconfig \
     libxrender1 \
     libxext6 \
