@@ -27,6 +27,10 @@ RUTA_CALENDARIO = "datos/calendario.json"
 
 # --- CONFIGURACIÓN DE BASE DE DATOS ---
 DATABASE_URL = os.environ.get("DATABASE_URL")
+# Corrección para Render: SQLAlchemy espera 'postgresql://' en lugar de 'postgres://'
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 engine = sqlalchemy.create_engine(DATABASE_URL) if DATABASE_URL else None
 metadata = sqlalchemy.MetaData()
 
