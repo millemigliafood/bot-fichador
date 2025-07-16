@@ -14,3 +14,4 @@ services:
 databases:
   - name: millemiglia-db
     plan: free
+startCommand: python telegram_bot.py
