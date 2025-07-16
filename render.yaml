@@ -16,3 +16,7 @@
       databases:
         - name: millemiglia-db
           plan: free
+          buildPacks: # 
+            - url: https://github.com/render-examples/wkhtmltopdf-buildpack # 
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python telegram_bot.py"
