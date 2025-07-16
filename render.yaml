@@ -5,8 +5,9 @@ services:
     dockerfilePath: ./Dockerfile
     plan: free
     autoDeploy: yes
-    envVars:
-      - key: DATABASE_URL
+envVars:
+  - key: TELEGRAM_TOKEN
+    value: 8174097868:AAFzP4wkQFh9gxJhir0rIo5I-Q9JEfsADZ4
         fromDatabase:
           name: millemiglia-db
           property: connectionString
