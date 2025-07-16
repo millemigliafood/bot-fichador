@@ -1,0 +1,5 @@
+      // filepath: c:\Users\Alejandro\Desktop\MilleMiglia_Fichador\bot_fichador\requirements.txt
+      python-telegram-bot
+      imgkit
+      psycopg2-binary
+      SQLAlchemy
