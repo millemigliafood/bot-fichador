@@ -3,6 +3,7 @@ services:
     name: bot-fichador-millemiglia
     env: python
     plan: free
+    # buildPacks va aquí, dentro del servicio del worker
     buildPacks:
       - url: https://github.com/render-examples/wkhtmltopdf-buildpack
     buildCommand: "pip install -r requirements.txt"
