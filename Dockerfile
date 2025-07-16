@@ -1,14 +1,12 @@
-FROM python:3.11-slim
+FROM python:3.11
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends wkhtmltopdf && \
-    rm -rf /var/lib/apt/lists/*
+# Instala dependencias del sistema necesarias para imgkit
+RUN apt-get update && apt-get install -y wkhtmltopdf wkhtmltoimage
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
 COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "telegram_bot.py"]
