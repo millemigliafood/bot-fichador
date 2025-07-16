@@ -125,6 +125,8 @@ async def recibir_ubicacion(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def mensaje_general(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("❓ No reconozco ese comando. Usa /menu para comenzar.")
 
+import http.server, socketserver; socketserver.TCPServer(("", 10000), http.server.SimpleHTTPRequestHandler).serve_forever()
+
 # --- MAIN ---
 def main():
     inicializar_db()
