@@ -105,9 +105,12 @@ def distancia_metros(lat1, lon1, lat2, lon2):
     dphi, dlambda = math.radians(lat2 - lat1), math.radians(lon2 - lon1)
     a = math.sin(dphi/2)**2 + math.cos(phi1)*math.cos(phi2)*math.sin(dlambda/2)**2
     return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1-a))
-
-# --- COMANDOS DEL BOT (Sin cambios) ---
-# (Todo tu código igual aquí...)
+    
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    await update.message.reply_text(
+        f"Hola {user.first_name}, bienvenido al bot de Mille Miglia. Usa /menu para comenzar."
+    )
 
 # --- FUNCIÓN PRINCIPAL DE EJECUCIÓN --- #
 def main():
