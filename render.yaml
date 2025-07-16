@@ -2,9 +2,8 @@ services:
   - type: worker
     name: bot-fichador-millemiglia
     env: docker
-    dockerfilePath: ./Dockerfile
     plan: free
-    # Ya no hay sección buildPacks. Todo se gestiona en el Dockerfile.
+    autoDeploy: yes
     envVars:
       - key: DATABASE_URL
         fromDatabase:
