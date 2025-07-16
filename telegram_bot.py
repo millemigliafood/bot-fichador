@@ -1,9 +1,6 @@
 import os
 import json
 import math
-import shutil
-import calendar
-import imgkit
 from datetime import datetime, timedelta
 
 import sqlalchemy
@@ -18,12 +15,12 @@ ADMIN_ID = 1110585143
 SEDE = (42.57169128484613, -0.5488306092087197)
 RADIO_METROS = 100
 
-# --- RUTAS (solo como referencia) ---
+# --- RUTAS ---
 RUTA_EMPLEADOS = "datos/empleados.json"
 RUTA_FICHAJES = "datos/fichajes.json"
 RUTA_CALENDARIO = "datos/calendario.json"
 
-# --- CONFIGURACIÓN DE BASE DE DATOS ---
+# --- BASE DE DATOS ---
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
@@ -47,7 +44,7 @@ tabla_calendario = sqlalchemy.Table('calendario', metadata,
 def inicializar_db():
     if engine:
         metadata.create_all(engine)
-        print("Tablas de la base de datos verificadas/creadas.")
+        print("✅ Tablas de la base de datos listas.")
 
 def leer_datos(tabla):
     if not engine: return {} if tabla.name != 'fichajes' else []
@@ -73,7 +70,7 @@ def guardar_datos(tabla, datos):
             return True
         except Exception as e:
             trans.rollback()
-            print(f"Error al guardar en DB en tabla {tabla.name}: {e}")
+            print(f"❌ Error al guardar en {tabla.name}: {e}")
             return False
 
 def leer_json(ruta, por_defecto):
@@ -88,10 +85,6 @@ def guardar_json(ruta, datos):
     if 'calendario' in ruta: return guardar_datos(tabla_calendario, datos)
     return False
 
-# --- Aquí continúa el resto del código igual ---
-# (No necesitas cambiar nada más en tu archivo original)
-# Pega todo el resto del código a partir de aquí, desde "def validar_usuario(user_id):" hasta el final.
-
 def validar_usuario(user_id):
     empleados = leer_json(RUTA_EMPLEADOS, {})
     return empleados.get(str(user_id))
@@ -105,20 +98,40 @@ def distancia_metros(lat1, lon1, lat2, lon2):
     dphi, dlambda = math.radians(lat2 - lat1), math.radians(lon2 - lon1)
     a = math.sin(dphi/2)**2 + math.cos(phi1)*math.cos(phi2)*math.sin(dlambda/2)**2
     return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1-a))
-    
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    await update.message.reply_text(
-        f"Hola {user.first_name}, bienvenido al bot de Mille Miglia. Usa /menu para comenzar."
-    )
 
-# --- FUNCIÓN PRINCIPAL DE EJECUCIÓN --- #
+# --- COMANDOS DEL BOT ---
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("👋 ¡Bienvenido al bot de Mille Miglia! Usa /menu para ver las opciones.")
+
+async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    botones = [
+        [KeyboardButton("📍 Fichar")],
+        [KeyboardButton("📅 Calendario")],
+        [KeyboardButton("📊 Ver registros")]
+    ]
+    markup = ReplyKeyboardMarkup(botones, resize_keyboard=True)
+    await update.message.reply_text("Elige una opción del menú:", reply_markup=markup)
+
+async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("👋 Has salido del menú.", reply_markup=ReplyKeyboardRemove())
+
+async def autorizar(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🔐 Solicitud enviada para revisión.")
+
+async def recibir_ubicacion(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("📍 Gracias por enviar tu ubicación (aún no procesamos esto).")
+
+async def mensaje_general(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("❓ No reconozco ese comando. Usa /menu para comenzar.")
+
+# --- MAIN ---
 def main():
     inicializar_db()
     if not leer_json(RUTA_EMPLEADOS, {}):
-        guardar_json(RUTA_EMPLEADOS, {str(ADMIN_ID): {"nombre": "Administrador", "es_admin": True}})
+        guardar_json(RUTA_EMPLEADOS, {str(ADMIN_ID): {"nombre": "Admin", "es_admin": True}})
     if not TOKEN:
-        print("❌ TELEGRAM_TOKEN no definido en variables de entorno.")
+        print("❌ TELEGRAM_TOKEN no definido.")
         return
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
@@ -127,7 +140,7 @@ def main():
     app.add_handler(CommandHandler("autorizar", autorizar))
     app.add_handler(MessageHandler(filters.LOCATION, recibir_ubicacion))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, mensaje_general))
-    print("✅ Bot Mille Miglia iniciado. Presiona Ctrl+C para detener.")
+    print("✅ Bot Mille Miglia activo.")
     app.run_polling()
 
 if __name__ == "__main__":
